@@ -16,21 +16,12 @@
 
 package sample.data.jpa.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import org.springframework.util.Assert;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.springframework.util.Assert;
 
 @Entity
 public class Review implements Serializable {
@@ -63,6 +54,7 @@ public class Review implements Serializable {
 	@Column(nullable = false)
 	private String title;
 
+	@JSONField(deserialize = false, serialize = false)
 	@Column(nullable = false, length = 5000)
 	private String details;
 

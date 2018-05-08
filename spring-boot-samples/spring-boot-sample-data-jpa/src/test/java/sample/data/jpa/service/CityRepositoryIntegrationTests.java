@@ -17,13 +17,15 @@ package sample.data.jpa.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import sample.data.jpa.domain.City;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import sample.data.jpa.SpringBeanUtil;
+import sample.data.jpa.domain.City;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,10 +41,27 @@ public class CityRepositoryIntegrationTests {
 	@Autowired
 	CityRepository repository;
 
+	@Autowired
+	LargeDataService largeDataService;
+
+
 	@Test
 	public void findsFirstPageOfCities() {
 		Page<City> cities = this.repository.findAll(PageRequest.of(0, 10));
 		assertThat(cities.getTotalElements()).isGreaterThan(20L);
+
+
+	}
+	@Test
+	public void test(){
+	    List ret = largeDataService.get(City.class, City.specFindAll());
+	    assertThat(ret).hasSize(21);
 	}
 
+	@Test
+	public void testSpringBeanUtil(){
+
+		assertThat(SpringBeanUtil.getBean("cityService")).isNotNull();
+		assertThat(SpringBeanUtil.getBean("cityRepository")).isNotNull();
+	}
 }

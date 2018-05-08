@@ -16,13 +16,16 @@
 
 package sample.data.jpa.domain;
 
-import java.io.Serializable;
+import com.alibaba.fastjson.annotation.JSONField;
+import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class City implements Serializable {
@@ -43,7 +46,7 @@ public class City implements Serializable {
 	@Column(nullable = false)
 	private String country;
 
-	@Column(nullable = false)
+	@JSONField(serialize = false)
 	private String map;
 
 	protected City() {
@@ -52,6 +55,30 @@ public class City implements Serializable {
 	public City(String name, String country) {
 		this.name = name;
 		this.country = country;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setMap(String map) {
+		this.map = map;
 	}
 
 	public String getName() {
@@ -70,9 +97,23 @@ public class City implements Serializable {
 		return this.map;
 	}
 
-	@Override
-	public String toString() {
-		return getName() + "," + getState() + "," + getCountry();
+	public static Specification specByIds(List<Long> ids)
+	{
+		return new Specification() {
+			@Override
+			public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				return root.get(City_.id).in(ids);
+			}
+		};
 	}
 
+	public static Specification specFindAll()
+	{
+		return new Specification() {
+			@Override
+			public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				return root.get(City_.id).isNotNull();
+			}
+		};
+	}
 }

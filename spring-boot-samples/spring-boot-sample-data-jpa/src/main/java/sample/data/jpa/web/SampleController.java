@@ -16,13 +16,16 @@
 
 package sample.data.jpa.web;
 
-import sample.data.jpa.service.CityService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sample.data.jpa.domain.City;
+import sample.data.jpa.service.CityService;
+import sample.data.jpa.service.LargeDataService;
+
+import java.util.List;
 
 @Controller
 public class SampleController {
@@ -30,11 +33,21 @@ public class SampleController {
 	@Autowired
 	private CityService cityService;
 
+
+	@Autowired
+	private LargeDataService largeDataService;
+
 	@GetMapping("/")
 	@ResponseBody
 	@Transactional(readOnly = true)
 	public String helloWorld() {
 		return this.cityService.getCity("Bath", "UK").getName();
+	}
+
+	@GetMapping("/test")
+	@ResponseBody
+	public List test(){
+		return largeDataService.get(City.class, City.specFindAll());
 	}
 
 }
